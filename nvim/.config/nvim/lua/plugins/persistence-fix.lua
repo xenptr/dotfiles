@@ -1,0 +1,43 @@
+-- Fix tmux-resurrect + LazyVim session restore.
+-- tmux-resurrect restores nvim as "nvim /path/to/dir". The dashboard fires
+-- on VimEnter and clobbers the restore, and persistence never loads because
+-- LazyVim only triggers it on BufReadPre (which never fires with no file arg).
+--
+-- Solution: tmux-resurrect's post-restore hook writes a flag file at
+-- /tmp/tmux_resurrect_restored. We check for that flag here, disable the
+-- dashboard, and auto-load the persistence session. The flag is deleted after
+-- reading so normal nvim invocations inside tmux are unaffected.
+return {
+--   {
+--     "folke/snacks.nvim",
+--     opts = function(_, opts)
+--       local is_resurrect = vim.fn.filereadable("/tmp/tmux_resurrect_restored") == 1
+--       if is_resurrect then
+--         opts.dashboard = opts.dashboard or {}
+--         opts.dashboard.enabled = false
+--       end
+--       return opts
+--     end,
+--   },
+--   {
+--     "folke/persistence.nvim",
+--     event = "VimEnter",
+--     opts = {},
+--     init = function()
+--       vim.api.nvim_create_autocmd("VimEnter", {
+--         nested = true,
+--         once = true,
+--         callback = function()
+--           local flag = "/tmp/tmux_resurrect_restored"
+--           if vim.fn.filereadable(flag) == 1 then
+--             -- Delete flag immediately so next nvim open is unaffected
+--             vim.fn.delete(flag)
+--             vim.schedule(function()
+--               require("persistence").load()
+--             end)
+--           end
+--         end,
+--       })
+--     end,
+--   },
+}

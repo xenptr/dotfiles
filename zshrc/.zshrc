@@ -1,3 +1,5 @@
+[ -f ~/.profile ] && source ~/.profile
+
 # --- Prompt ---
 eval "$(starship init zsh)"
 
@@ -119,6 +121,20 @@ new_tmux () {
 
 alias tm=new_tmux
 
+yank_path() {
+  local target="${1:-.}"
+  local abs
+
+  abs=$(realpath "$target") || {
+    echo "Error: '$target' does not exist." >&2
+    return 1
+  }
+
+  printf "%s" "$abs" | wl-copy
+}
+
+alias yp=yank_path
+
 # Open file/URL in default app (background)
 open() {
   xdg-open "$@" >/dev/null 2>&1 &
@@ -161,9 +177,14 @@ export SUDO_EDITOR="$EDITOR"
 export BAT_THEME=ansi
 export PAGER="less"
 
+# --- Doom Emacs ---
+export PATH="$HOME/.config/emacs/bin:$PATH"
+
 # --- Golang ---
 export GOPATH="$HOME/go"
 export GOBIN="$GOPATH/bin"
 export PATH="$GOBIN:$PATH"
 
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+. "$HOME/.local/share/../bin/env"
