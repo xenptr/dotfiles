@@ -188,3 +188,6 @@ export PATH="$GOBIN:$PATH"
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 
 . "$HOME/.local/share/../bin/env"
+
+# omarchy-aftertouch: current Omarchy feature layer
+source "/home/exploiter/omarchy-aftertouch/zsh/omarchy.zsh"
